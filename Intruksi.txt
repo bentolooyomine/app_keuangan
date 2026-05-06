@@ -1,0 +1,11 @@
+kasir
+Pencarian kwintasi
+TTBayar
+
+Nokwitansi-> Scrap Data TTbayar
+Kasih Alasan -> Kalau Di accept Berarti Sudah DiHapus 
+
+ssh -L 14330:192.168.20.71:1433 benni@36.95.152.94 -p 2271
+Benni678
+
+

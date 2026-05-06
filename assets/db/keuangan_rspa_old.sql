@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 06, 2026 at 10:39 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.0.28
+-- Generation Time: May 06, 2026 at 09:59 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -53,31 +53,6 @@ INSERT INTO `menus` (`id`, `name`, `icon`, `urutan`, `is_active`, `created_at`) 
 (10, 'Layanan Mandiri', 'bi bi-phone', 10, 0, '2026-05-03 00:59:01'),
 (11, 'Pemetaan', 'bi bi-map', 11, 0, '2026-05-03 00:59:01'),
 (12, 'Pengaturan', 'bi bi-gear', 12, 0, '2026-05-03 00:59:01');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `permohonan_penghapusan`
---
-
-CREATE TABLE `permohonan_penghapusan` (
-  `id` int(11) NOT NULL,
-  `kode_kwitansi` varchar(50) DEFAULT NULL,
-  `kode_ttbayar` varchar(100) DEFAULT NULL,
-  `no_kwitansi` varchar(50) DEFAULT NULL,
-  `tanggal_kwitansi` datetime DEFAULT NULL,
-  `total_bayar` decimal(18,2) DEFAULT NULL,
-  `id_petugas` varchar(50) DEFAULT NULL,
-  `alasan` text DEFAULT NULL,
-  `status_pengajuan` varchar(20) DEFAULT 'pengajuan',
-  `tanggal_pengajuan` datetime DEFAULT current_timestamp(),
-  `created_by` varchar(50) DEFAULT NULL,
-  `created_time` datetime DEFAULT current_timestamp(),
-  `approved_by` varchar(50) DEFAULT NULL,
-  `approved_time` datetime DEFAULT NULL,
-  `keterangan_approval` text DEFAULT NULL,
-  `KodeKunjungan` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -248,27 +223,7 @@ INSERT INTO `sub_menu` (`id`, `menu_id`, `title`, `url`, `icon`, `is_active`) VA
 (3, 2, 'Role User', 'role', 'fas fa-user-shield', 1),
 (4, 3, 'Profil Bidang', 'profil', 'fas fa-landmark', 1),
 (5, 12, 'Setting Website', 'setting', 'fas fa-cogs', 0),
-(6, 4, 'Permohonan Kwitansi', 'kwitansi', 'fas fa-users', 1),
-(7, 4, 'Daftar Permohonan', 'kwitansi/permohonan', 'fas fa-user-shield', 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `syslog_sinkron`
---
-
-CREATE TABLE `syslog_sinkron` (
-  `id` int(11) NOT NULL,
-  `kode` varchar(50) DEFAULT NULL,
-  `tanggal` datetime DEFAULT NULL,
-  `aplikasi` varchar(100) DEFAULT NULL,
-  `kegiatan` text DEFAULT NULL,
-  `nomor` varchar(100) DEFAULT NULL,
-  `petugas` varchar(50) DEFAULT NULL,
-  `transaksi` int(11) DEFAULT 0,
-  `id_permohonan_penghapusan` int(11) DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+(6, 4, 'Permohonan Kwitansi', 'kwitansi', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -297,7 +252,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `nama`, `username`, `email`, `password`, `no_hp`, `foto`, `role_id`, `is_active`, `last_login`, `created_at`, `updated_at`, `penduduk_id`) VALUES
-(1, 'Administrator', 'admin', NULL, '$2y$10$iDRPyMj22lsf0YcYrTLhH.CR3gZqvr.PncMbyW6YDXDtu19Mq71pC', NULL, NULL, 1, 1, '2026-05-06 20:15:43', '2026-05-03 01:03:56', '2026-05-06 18:15:43', NULL);
+(1, 'Administrator', 'admin', NULL, '$2y$10$iDRPyMj22lsf0YcYrTLhH.CR3gZqvr.PncMbyW6YDXDtu19Mq71pC', NULL, NULL, 1, 1, '2026-05-06 09:59:29', '2026-05-03 01:03:56', '2026-05-06 07:59:29', NULL);
 
 -- --------------------------------------------------------
 
@@ -321,12 +276,6 @@ CREATE TABLE `user_log` (
 -- Indexes for table `menus`
 --
 ALTER TABLE `menus`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `permohonan_penghapusan`
---
-ALTER TABLE `permohonan_penghapusan`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -377,12 +326,6 @@ ALTER TABLE `sub_menu`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `syslog_sinkron`
---
-ALTER TABLE `syslog_sinkron`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -404,12 +347,6 @@ ALTER TABLE `user_log`
 --
 ALTER TABLE `menus`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT for table `permohonan_penghapusan`
---
-ALTER TABLE `permohonan_penghapusan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -451,12 +388,6 @@ ALTER TABLE `submenus`
 -- AUTO_INCREMENT for table `sub_menu`
 --
 ALTER TABLE `sub_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT for table `syslog_sinkron`
---
-ALTER TABLE `syslog_sinkron`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
