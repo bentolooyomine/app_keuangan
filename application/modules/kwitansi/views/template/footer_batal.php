@@ -1,7 +1,5 @@
 <!--end::App Main-->
       <!--begin::Footer-->
-
-      
       <footer class="app-footer">
         <!--begin::To the end-->
         <div class="float-end d-none d-sm-inline"><?= $versi ?></div>
@@ -19,6 +17,10 @@
     <!--end::App Wrapper-->
     <!--begin::Script-->
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
+
+
+
+
     <script
       src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
       crossorigin="anonymous"
@@ -75,88 +77,32 @@
       crossorigin="anonymous"
     ></script> -->
 
-        <!--end::Script-->
+    <script>
+      // NOTICE!! DO NOT USE ANY OF THIS JAVASCRIPT
+      // IT'S ALL JUST JUNK FOR DEMO
+      // ++++++++++++++++++++++++++++++++++++++++++
 
-        <script src="https://code.highcharts.com/highcharts.js"></script>
-        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+      /* apexcharts
+       * -------
+       * Here we will create a few charts using apexcharts
+       */
 
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
+      //-----------------------
+      // - MONTHLY SALES CHART -
+      //-----------------------
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+      $(document).ready(function() {
 
-    // =====================
-    // PENDAPATAN HARIAN
-    // =====================
-    Highcharts.chart('chart_pendapatan', {
-        title: { text: null },
-        xAxis: { categories: kategori },
-        yAxis: {
-            labels: {
-                formatter: function () {
-                    return this.value.toLocaleString();
-                }
+    table = $('#table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: "<?= base_url('kwitansi/ajax_list_batal') ?>",
+            type: "POST",
+            data: function (d) {
+                d.tanggal = $('#tanggal').val();
             }
-        },
-        series: [{
-            name: 'Pendapatan',
-            data: total
-        }]
-    });
-
-    // =====================
-    // TRANSAKSI
-    // =====================
-    Highcharts.chart('chart_transaksi', {
-        chart: { type: 'column' },
-        title: { text: null },
-        xAxis: { categories: kategori },
-        series: [{
-            name: 'Transaksi',
-            data: jumlah
-        }]
-    });
-
-    // =====================
-    // AKUMULASI
-    // =====================
-    Highcharts.chart('chart_akumulasi', {
-        chart: { type: 'area' },
-        title: { text: null },
-        xAxis: { categories: kategori },
-        series: [{
-            name: 'Akumulasi',
-            data: akumulasi
-        }]
-    });
-
-    // =====================
-    // PIE CHART
-    // =====================
-    Highcharts.chart('chart_pie', {
-        chart: { type: 'pie' },
-        title: { text: null },
-        series: [{
-            name: 'Pendapatan',
-            data: data.map(d => ({
-                name: d.tgl,
-                y: parseFloat(d.total_bayar)
-            }))
-        }]
+        }
     });
 
 });
-
-function beritaacara(id)
-{
-    window.open(
-        "<?= base_url('kwitansi/beritaacara/') ?>" + id,
-        '_blank'
-    );
-}
-
-</script>
-  </body>
-  <!--end::Body-->
-</html>

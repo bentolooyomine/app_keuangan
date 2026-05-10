@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class M_dashboard extends CI_Model {
+class M_profil  extends CI_Model {
 
 
   
@@ -109,6 +109,56 @@ public function count_filtered_batal($tanggal)
 
     return $this->db->count_all_results();
 }
+
+
+ public function get_setting()
+    {
+        return $this->db
+            ->get('settings')
+            ->row();
+    }
+
+    public function simpan()
+    {
+        $id = $this->input->post('id');
+
+        $data = [
+
+            'nama_app'     => $this->input->post('nama_app'),
+            'kecamatan'    => $this->input->post('kecamatan'),
+            'kabupaten'    => $this->input->post('kabupaten'),
+            'provinsi'     => $this->input->post('provinsi'),
+            'alamat'       => $this->input->post('alamat'),
+            'kode_pos'     => $this->input->post('kode_pos'),
+            'telepon'      => $this->input->post('telepon'),
+            'email'        => $this->input->post('email'),
+            'website'      => $this->input->post('website'),
+            'nama_kepala'  => $this->input->post('nama_kepala'),
+            'nip_kepala'   => $this->input->post('nip_kepala'),
+            'updated_at'   => date('Y-m-d H:i:s')
+
+        ];
+
+        // UPLOAD LOGO
+        if(!empty($_FILES['logo']['name'])){
+
+            $config['upload_path']   = './uploads/logo/';
+            $config['allowed_types'] = 'jpg|jpeg|png|webp';
+            $config['encrypt_name']  = TRUE;
+
+            $this->load->library('upload', $config);
+
+            if($this->upload->do_upload('logo')){
+
+                $upload = $this->upload->data();
+
+                $data['logo'] = $upload['file_name'];
+            }
+        }
+
+        $this->db->where('id', $id);
+        return $this->db->update('settings', $data);
+    }
 
 
 }

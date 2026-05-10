@@ -169,4 +169,167 @@ public function get_detail_permohonan($id)
     return $this->db->get_where('permohonan_penghapusan', ['id' => $id])->row();
 }
 
+
+private function _get_query_batal($tanggal, $start, $length)
+{
+    $where = "";
+
+    // FILTER TANGGAL
+    if ($tanggal) {
+
+        $where .= "
+            AND CONVERT(date, TTBayar.Tanggal) = '$tanggal'
+        ";
+    }
+
+    // FILTER BPD
+    $where .= "
+        AND TTBayar.StBPD = 1
+        AND TTBayar.StBayarBPD = 0
+    ";
+
+    // SEARCH DATATABLE
+    if (!empty($_POST['search']['value'])) {
+
+        $search = strtoupper(trim($_POST['search']['value']));
+
+        $where .= "
+            AND (
+                UPPER(LTRIM(RTRIM(TTBayar.NoKwitansi))) LIKE '%$search%'
+                OR UPPER(LTRIM(RTRIM(TMPetugas.Nama))) LIKE '%$search%'
+            )
+        ";
+    }
+
+    // ORDER
+    $order = "
+        ORDER BY 
+            TTBayar.Tanggal DESC,
+            TTBayar.Kode DESC
+    ";
+
+    // PAGINATION SQL SERVER
+    $limit = "";
+
+    if ($length != -1) {
+
+        $limit = "
+            OFFSET $start ROWS
+            FETCH NEXT $length ROWS ONLY
+        ";
+    }
+
+    $sql = "
+        SELECT 
+            TTBayar.Kode,
+            TTBayar.NoKwitansi,
+            TTBayar.Tanggal,
+            TTBayar.Bayar,
+            TMPetugas.Nama AS Petugas
+
+        FROM TTBayar
+
+        LEFT JOIN TMPetugas 
+            ON TMPetugas.Kode = TTBayar.IdPetugas
+
+        WHERE 1=1 
+            $where
+
+        $order
+
+        $limit
+    ";
+
+    return $sql;
+}
+
+
+public function get_datatables_batal($tanggal, $start, $length)
+{
+    $sql = $this->_get_query_batal(
+        $tanggal,
+        $start,
+        $length
+    );
+
+    return $this->db_simrs->query($sql)->result();
+}
+
+public function count_all_batal()
+{
+    $sql = "
+        SELECT COUNT(*) AS total
+        FROM TTBayar
+        WHERE 
+            StBPD = 1
+            AND StBayarBPD = 0
+    ";
+
+    return $this->db_simrs->query($sql)->row()->total;
+}
+
+public function count_filtered_batal($tanggal)
+{
+    $where = "";
+
+    if ($tanggal) {
+
+        $where .= "
+            AND CONVERT(date, TTBayar.Tanggal) = '$tanggal'
+        ";
+    }
+
+    $where .= "
+        AND TTBayar.StBPD = 1
+        AND TTBayar.StBayarBPD = 0
+    ";
+
+    // SEARCH DATATABLE
+    if (!empty($_POST['search']['value'])) {
+
+        $search = strtoupper(trim($_POST['search']['value']));
+
+        $where .= "
+            AND (
+                UPPER(LTRIM(RTRIM(TTBayar.NoKwitansi))) LIKE '%$search%'
+                OR UPPER(LTRIM(RTRIM(TMPetugas.Nama))) LIKE '%$search%'
+            )
+        ";
+    }
+
+    $sql = "
+        SELECT COUNT(*) AS total
+
+        FROM TTBayar
+
+        LEFT JOIN TMPetugas 
+            ON TMPetugas.Kode = TTBayar.IdPetugas
+
+        WHERE 1=1
+            $where
+    ";
+
+    return $this->db_simrs->query($sql)->row()->total;
+}
+
+
+public function proses_batal_bpd($kode)
+{
+    $sql = "
+        UPDATE TTBayar
+        SET StBPD = 0
+        WHERE Kode = '$kode'
+    ";
+
+    return $this->db_simrs->query($sql);
+}
+
+public function get_beritaacara($id)
+{
+    return $this->db
+        ->where('id', $id)
+        ->get('permohonan_penghapusan')
+        ->row();
+}
+
 }

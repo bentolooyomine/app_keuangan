@@ -8,4 +8,19 @@ Kasih Alasan -> Kalau Di accept Berarti Sudah DiHapus
 ssh -L 14330:192.168.20.71:1433 benni@36.95.152.94 -p 2271
 Benni678
 
+//MYSQL DATABSE 
+ssh -N -L 3307:192.168.20.28:3306 root@36.95.152.94 -p 20282
+Password: RSudpa01
+
+192.168.20.28:22 -> 36.95.152.94:20282
+192.168.20.28:3306 -> 36.95.152.94:2028
+
+SSH
+root
+RSudpa01
+
+MYSQL
+lawang
+lawan9@kreas!DB
+
 

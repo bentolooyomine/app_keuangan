@@ -37,7 +37,7 @@ class Kwitansi extends CI_Controller {
         // 🔥 VIEW UTAMA DATATABLE
         $this->load->view('dashboard', $data);
 
-        $this->load->view('template/footer');
+        $this->load->view('template/footer_batal');
     }
 
     // =========================
@@ -82,7 +82,7 @@ class Kwitansi extends CI_Controller {
 
     // 🔥 KOLOM TOOLS
     '
-    <button class="btn btn-sm btn-info" onclick="detail(\''.$row->Kode.'\')">
+    <button class="btn btn-sm btn-success" onclick="detail(\''.$row->Kode.'\')">
        <i class="bi bi-eye"></i>  Detail
     </button>
 
@@ -229,6 +229,10 @@ public function ajax_permohonan()
         <button class="btn btn-info btn-sm" onclick="detailSinkron('.$r->id.')">
              <i class="bi bi-eye"></i>  Detail Transaksi
         </button>
+
+         <button class="btn btn-secondary btn-sm" onclick="beritaacara('.$r->id.')">
+             <i class="bi bi-stack"></i>  Berita Acara
+        </button>
     ';
 }
 
@@ -357,6 +361,121 @@ public function detail_sinkron()
         'status' => true,
         'data' => $data
     ]);
+}
+
+
+ public function batalbpd()
+    {
+        $role_id = $this->session->userdata('role_id');
+
+        $menu = $this->M_kwitansi->get_menu($role_id);
+
+        foreach ($menu as $m) {
+            $m->submenu = $this->M_kwitansi->get_submenu($m->id);
+        }
+
+        $data = array(
+            'title' => 'Aplikasi Keuangan RSPA',
+            'nama_app' => 'Batal Bayar Kwitansi',
+            'user'  => $this->session->userdata('username'),
+            'menu'  => $menu,
+            'versi' => '0.0.1'
+        );
+
+        $this->load->view('template/header', $data);
+        $this->load->view('template/sidebar', $data);
+
+        // 🔥 VIEW UTAMA DATATABLE
+        $this->load->view('dashboard_batal', $data);
+
+        $this->load->view('template/footer');
+    }
+
+
+public function ajax_list_batal()
+{
+    $tanggal = $this->input->post('tanggal');
+
+    if (!$tanggal) {
+        $tanggal = date('Y-m-d');
+    }
+
+    $start  = $this->input->post('start');
+    $length = $this->input->post('length');
+    $draw   = $this->input->post('draw');
+
+    $list = $this->M_kwitansi->get_datatables_batal(
+        $tanggal,
+        $start,
+        $length
+    );
+
+    $data = [];
+    $no = $start;
+
+    foreach ($list as $row) {
+
+        $no++;
+
+        $data[] = [
+            $no,
+            $row->NoKwitansi,
+            date('d-m-Y H:i', strtotime($row->Tanggal)),
+            number_format($row->Bayar, 0, ',', '.'),
+            $row->Petugas,
+
+            '
+            <button class="btn btn-sm btn-success" onclick="detail(\''.$row->Kode.'\')">
+               <i class="bi bi-eye"></i> Detail
+            </button>
+
+            <button class="btn btn-sm btn-danger" onclick="batalBpd(\''.$row->Kode.'\')">
+               <i class="bi bi-shield-fill-x"></i> Batal BPD
+            </button>
+            '
+        ];
+    }
+
+    $output = [
+        "draw" => intval($draw),
+        "recordsTotal" => $this->M_kwitansi->count_all_batal(),
+        "recordsFiltered" => $this->M_kwitansi->count_filtered_batal($tanggal),
+        "data" => $data,
+    ];
+
+    echo json_encode($output);
+}
+
+
+public function proses_batal_bpd()
+{
+    $kode = $this->input->post('kode');
+
+    $update = $this->M_kwitansi->proses_batal_bpd($kode);
+
+    if($update){
+
+        echo json_encode([
+            'status' => true
+        ]);
+
+    } else {
+
+        echo json_encode([
+            'status' => false,
+            'message' => 'Gagal update data'
+        ]);
+    }
+}
+
+public function beritaacara($id)
+{
+    $data['row'] = $this->M_kwitansi->get_beritaacara($id);
+$data['setting'] = $this->db->get('settings')->row();
+    $this->load->view(
+        'berita_acara_view',
+        $data
+    );
 }
 
 
